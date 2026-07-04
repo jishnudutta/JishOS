@@ -4,6 +4,8 @@ import Notes from "./Notes";
 import DesktopIcon from "./DesktopIcon";
 import notesIcon from "../assets/Notes-icon.png";
 import WindowGUI from "./WindowGUI";
+import browserIcon from "../assets/Browser-icon.png";
+import Browser from "./Browser";
 
 function Desktop() {
   const desktopRef = useRef(null)
@@ -26,6 +28,18 @@ function Desktop() {
         </WindowGUI>
       );
     }
+    if (app === "browser") {
+      return (
+        <WindowGUI
+          key={app}
+          title="Browser"
+          onClose={() => closeWindowByName("browser")}
+          desktopRef={desktopRef}
+        >
+          <Browser />
+        </WindowGUI>
+      );
+    }
   });
   return (
     <div
@@ -44,11 +58,11 @@ function Desktop() {
           }}
         />
         <DesktopIcon
-          icon={notesIcon}
-          name="Notes"
+          icon={browserIcon}
+          name="Browser"
           onClick={() => {
-            if (!openWindows.includes("notes")) {
-              setOpenWindows([...openWindows, "notes"]);
+            if (!openWindows.includes("browser")) {
+              setOpenWindows([...openWindows, "browser"]);
             }
           }}
         />

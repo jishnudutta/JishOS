@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 
 function WindowGUI({ title, onClose, children, desktopRef }) {
   const windowRef = useRef(null);
-  
+
   const [position, setPosition] = useState({
     X: 400,
     Y: 120,
@@ -33,8 +33,10 @@ function WindowGUI({ title, onClose, children, desktopRef }) {
   }, []);
   const drag = (e) => {
     if (draggingRef.current) {
-      const maxX = desktopRef.current.clientWidth - windowRef.current.offsetWidth;
-      const maxY = desktopRef.current.clientHeight - windowRef.current.offsetHeight;
+      const maxX =
+        desktopRef.current.clientWidth - windowRef.current.offsetWidth;
+      const maxY =
+        desktopRef.current.clientHeight - windowRef.current.offsetHeight;
       let mouseX = e.clientX;
       let mouseY = e.clientY;
       let windowX = mouseX - offset.current.X;
@@ -68,8 +70,15 @@ function WindowGUI({ title, onClose, children, desktopRef }) {
       ref={windowRef}
     >
       <div
-        className="flex items-center justify-between text-3xl border-b border-white/20
-        titlebar select-none"
+        className="flex items-center justify-between
+                    h-11
+                    px-4
+                    bg-white/10
+                    border-b border-white/20
+                    select-none 
+                    font-medium
+                    text-xl
+                  text-white/90"
         onMouseDown={(e) => {
           let windowX = position.X;
           let windowY = position.Y;
@@ -79,18 +88,31 @@ function WindowGUI({ title, onClose, children, desktopRef }) {
           draggingRef.current = true;
         }}
       >
-        <div
-          className="bg-white/10
-                        backdrop-blur-xl
-                        border-b border-white/15"
-        >
-          {title}
-        </div>
+        <div className="font-semibold">{title}</div>
         <button
-          className="hover:bg-red-600 p-4 rounded"
+          className="w-9 h-9
+                    flex items-center justify-center
+                    rounded-lg
+                  text-white/70
+                    transition-colors
+                  hover:bg-red-500
+                  hover:text-white"
           onClick={() => onClose()}
         >
-          X
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6 18 18 6M6 6l12 12"
+            />
+          </svg>
         </button>
       </div>
       <div className="p-8">{children}</div>

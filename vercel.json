@@ -1,9 +1,0 @@
-{
-  "redirects": [
-    {
-      "source": "/jishos",
-      "destination": "https://jish-os.vercel.app/",
-      "permanent": true
-    }
-  ]
-}
