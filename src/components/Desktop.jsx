@@ -8,33 +8,48 @@ import browserIcon from "../assets/Browser-icon.png";
 import Browser from "./Browser";
 
 function Desktop() {
-  const desktopRef = useRef(null)
+  const [nextOffset, setNextOffset] = useState({
+    x: 0,
+    y: 0,
+  });
+  const desktopRef = useRef(null);
   const [openWindows, setOpenWindows] = useState([]);
   const closeWindowByName = (nameToRemove) => {
     setOpenWindows((prevWindows) => {
-      return prevWindows.filter((app) => app !== nameToRemove);
+      return prevWindows.filter((app) => app.type !== nameToRemove);
     });
   };
+  const focusWindow = (type) => {
+    let others = openWindows.filter((w) => w.type !== type);
+    const w = openWindows.find((Window) => Window.type === type);
+    setOpenWindows([...others, w ]);
+  };
   const windows = openWindows.map((app) => {
-    if (app === "notes") {
+    if (app.type === "notes") {
       return (
         <WindowGUI
-          key={app}
+          onFocus={() => focusWindow("notes")}
+          key={app.id}
           title="Notes"
           onClose={() => closeWindowByName("notes")}
           desktopRef={desktopRef}
+          x={app.x}
+          y={app.y}
         >
           <Notes />
         </WindowGUI>
       );
     }
-    if (app === "browser") {
+    if (app.type === "browser") {
       return (
         <WindowGUI
-          key={app}
+          onFocus={() => focusWindow("browser")}
+          key={app.id}
           title="Browser"
           onClose={() => closeWindowByName("browser")}
           desktopRef={desktopRef}
+          x={app.x}
+          y={app.y}
         >
           <Browser />
         </WindowGUI>
@@ -44,7 +59,8 @@ function Desktop() {
   return (
     <div
       className='h-screen w-screen bg-[url("./assets/Desktop-bg.png")]
-     bg-cover bg-center bg-no-repeat relative' ref={desktopRef}
+     bg-cover bg-center bg-no-repeat relative'
+      ref={desktopRef}
     >
       <TopBar />
       <div className="absolute top-24 left-6 grid grid-cols-1 gap-4">
@@ -52,8 +68,20 @@ function Desktop() {
           icon={notesIcon}
           name="Notes"
           onClick={() => {
-            if (!openWindows.includes("notes")) {
-              setOpenWindows([...openWindows, "notes"]);
+            if (!openWindows.map((Window) => Window.type).includes("notes")) {
+              setOpenWindows([
+                ...openWindows,
+                {
+                  id: crypto.randomUUID(),
+                  type: "notes",
+                  x: 100 + nextOffset.x,
+                  y: 80 + nextOffset.y,
+                },
+              ]);
+              setNextOffset((prev) => ({
+                x: prev.x + 30,
+                y: prev.y + 30,
+              }));
             }
           }}
         />
@@ -61,17 +89,20 @@ function Desktop() {
           icon={browserIcon}
           name="Browser"
           onClick={() => {
-            if (!openWindows.includes("browser")) {
-              setOpenWindows([...openWindows, "browser"]);
-            }
-          }}
-        />
-        <DesktopIcon
-          icon={notesIcon}
-          name="Notes"
-          onClick={() => {
-            if (!openWindows.includes("notes")) {
-              setOpenWindows([...openWindows, "notes"]);
+            if (!openWindows.map((Window) => Window.type).includes("browser")) {
+              setOpenWindows([
+                ...openWindows,
+                {
+                  id: crypto.randomUUID(),
+                  type: "browser",
+                  x: 100 + nextOffset.x,
+                  y: 80 + nextOffset.y,
+                },
+              ]);
+              setNextOffset((prev) => ({
+                x: prev.x + 30,
+                y: prev.y + 30,
+              }));
             }
           }}
         />

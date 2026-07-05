@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 
-function WindowGUI({ title, onClose, children, desktopRef }) {
+function WindowGUI({ title, onClose, children, desktopRef, x, y, onFocus }) {
   const windowRef = useRef(null);
   const resizingRef = useRef(null);
 
   const [position, setPosition] = useState({
-    X: 400,
-    Y: 120,
+    X: x,
+    Y: y,
   });
   const [size, setSize] = useState({
     width: 700,
@@ -22,7 +22,6 @@ function WindowGUI({ title, onClose, children, desktopRef }) {
     resize(e);
   };
   const handlePointerUp = (e) => {
-    console.log("Mouse up");
     draggingRef.current = false;
     resizingRef.current = null;
   };
@@ -118,11 +117,11 @@ function WindowGUI({ title, onClose, children, desktopRef }) {
       }));
     }
   };
-
   return (
     <div
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
+       onPointerDown={() => onFocus()}
       className="bg-sky-100/10
                     backdrop-blur-2xl
                     backdrop-saturate-150
@@ -132,8 +131,7 @@ function WindowGUI({ title, onClose, children, desktopRef }) {
                     shadow-2xl shadow-sky-900/10
                     overflow-hidden
                     absolute
-                    relative
-                    flex flex-col h-full
+                    flex flex-col 
                     "
       style={{
         left: position.X,
