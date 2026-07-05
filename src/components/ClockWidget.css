@@ -1,18 +1,6 @@
 body {
-  padding: 0;
   margin: 0;
-}
-.widget{
-    padding:14px;
-    border-radius:20px;
-
-    background:rgba(255,255,255,.12);
-
-    backdrop-filter:blur(16px);
-
-    border:1px solid rgba(255,255,255,.2);
-
-    box-shadow:0 8px 30px rgba(0,0,0,.08);
+  padding: 0;
 }
 
 *,
@@ -21,81 +9,122 @@ body {
   box-sizing: border-box;
 }
 
+/* Widget container */
+.widget {
+  padding: 16px;
+  border-radius: 24px;
+
+  background: rgba(18, 30, 55, 0.35);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+
+  border: 1px solid rgba(255,255,255,.12);
+
+  box-shadow:
+    0 10px 35px rgba(0,0,0,.25),
+    inset 0 1px rgba(255,255,255,.08);
+}
+
+/* Clock layout */
+
 .app {
   --clock-size: 17px;
-  --gap: 1px;
+  --gap: 2px;
   --clock-segment-w: calc(var(--clock-size) * 4 + var(--gap) * 5);
   --clock-segment-h: calc(var(--clock-size) * 6 + var(--gap) * 5);
-  font-family: sans-serif;
-  text-align: center;
+
   display: flex;
-  gap: var(--gap);
   align-items: center;
-  padding-left: calc(var(--clock-size) + var(--gap) * 2);
+  gap: var(--gap);
+
+  font-family: sans-serif;
 }
 
 .app > div {
   display: flex;
   flex-wrap: wrap;
   gap: var(--gap);
+
   width: var(--clock-segment-w);
   height: var(--clock-segment-h);
 }
 
 .app > div:nth-of-type(even) {
-  margin-right: var(--clock-size);
+  margin-right: 18px;
 }
+
+/* Individual clocks */
 
 .clock {
   --w: 47%;
-  --h: 3px;
-  --dur: 0.4s;
+  --h: 2px;
+  --dur: .4s;
+
   position: relative;
+
   width: var(--clock-size);
   height: var(--clock-size);
-  border-radius: 35%;
+
   flex-shrink: 0;
-  border: 1px solid rgba(255,255,255,.2);
-  background: linear-gradient(
-    135deg,
-    rgba(255,255,255,.18),
-    rgba(255,255,255,.08)
-);
- box-shadow:
-    0 0 10px rgba(100,180,255,.18);
+  border-radius: 40%;
+
+  background: rgba(255,255,255,.08);
+
+  border: 1px solid rgba(255,255,255,.10);
+
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.06),
+    0 0 8px rgba(120,180,255,.08);
 }
+
+/* Clock hands */
 
 .clock::before,
 .clock::after {
   position: absolute;
   content: "";
-  top: calc(50% - var(--h) * 0.5);
+
+  top: calc(50% - var(--h)/2);
   left: 50%;
-  transform-origin: 0% 50%;
+
   width: var(--w);
   height: var(--h);
-  background: rgba(35, 40, 50, 0.9);
-  border-radius: 9999px;
-  transition: calc(var(--dur) * 1s) ease-in-out;
+
+  border-radius: 999px;
+
+  transform-origin: 0% 50%;
   transform: rotate(calc(var(--angle) * 1deg));
+
+  transition: transform calc(var(--dur) * 1s) ease;
+
+  box-shadow: 0 0 3px currentColor;
 }
+
+/* Hour hand */
 
 .clock::before {
   --angle: var(--hour-angle);
+
+  background: #84c5ff;
+  color: #84c5ff;
 }
+
+/* Minute hand */
 
 .clock::after {
   --angle: var(--minute-angle);
+
+  background: #ffffff;
+  color: #ffffff;
 }
 
-@media (max-width: 700px) {
+@media (max-width:700px) {
   .clock {
     --h: 2px;
-    border: 1px solid white;
   }
 }
 
-@media (max-width: 500px) {
+@media (max-width:500px) {
   .clock {
     --h: 1px;
     --w: 50%;

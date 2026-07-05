@@ -18,7 +18,11 @@ function Notes() {
     <div className="flex flex-col h-full">
       <textarea
         value={note}
-        className="flex-1 border"
+        className="flex-1 border bg-transparent
+    text-white/90
+    placeholder:text-white/40
+    caret-sky-300
+    outline-none"
         onChange={(e) => setNote(e.target.value)}
       ></textarea>
       <button
