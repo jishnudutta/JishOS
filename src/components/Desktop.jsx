@@ -6,7 +6,7 @@ import notesIcon from "../assets/Notes-icon.png";
 import WindowGUI from "./WindowGUI";
 import browserIcon from "../assets/Browser-icon.png";
 import Browser from "./Browser";
-
+import ClockWidget from "./Clock";
 function Desktop() {
   const [nextOffset, setNextOffset] = useState({
     x: 0,
@@ -22,7 +22,7 @@ function Desktop() {
   const focusWindow = (type) => {
     let others = openWindows.filter((w) => w.type !== type);
     const w = openWindows.find((Window) => Window.type === type);
-    setOpenWindows([...others, w ]);
+    setOpenWindows([...others, w]);
   };
   const windows = openWindows.map((app) => {
     if (app.type === "notes") {
@@ -63,6 +63,17 @@ function Desktop() {
       ref={desktopRef}
     >
       <TopBar />
+      <div
+        className="
+    absolute
+    top-20
+    right-6
+    z-10
+    p-3
+  "
+      >
+        <ClockWidget />
+      </div>
       <div className="absolute top-24 left-6 grid grid-cols-1 gap-4">
         <DesktopIcon
           icon={notesIcon}
