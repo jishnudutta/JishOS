@@ -305,9 +305,7 @@ function Desktop() {
           icon={welcomeIcon}
           name="Welcome"
           onClick={() => {
-            if (
-              !openWindows.map((Window) => Window.type).includes("welcomer")
-            ) {
+            if (!openWindows.map((Window) => Window.type).includes("welcome")) {
               setOpenWindows([
                 ...openWindows,
                 {
@@ -389,6 +387,10 @@ function Desktop() {
         />
       </div>
       {windows}
+      <div className="absolute bottom-4 right-6 text-white/40 text-sm font-medium select-none">
+        Designed & Developed by{" "}
+        <span className="font-semibold">Jishnu Dutta</span>
+      </div>
     </div>
   );
 }
