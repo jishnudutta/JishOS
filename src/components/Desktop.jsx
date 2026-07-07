@@ -1,9 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import TopBar from "./TopBar";
 import Notes from "./Notes";
 import DesktopIcon from "./DesktopIcon";
 import notesIcon from "../assets/Notes-icon.png";
 import pythonIcon from "../assets/Python-icon.png";
+import welcomeIcon from "../assets/Welcome-icon.png";
 import WindowGUI from "./WindowGUI";
 import browserIcon from "../assets/Browser-icon.png";
 import Browser from "./Browser";
@@ -12,8 +13,45 @@ import BasicDateCalendar from "./Calendar";
 import wallpaper from "../assets/azure-horizon.3840x2160.mp4";
 import PythonIDE from "./PythonIDE";
 import GradientText from "./GradientText";
+import { loadPyodide } from "pyodide";
+import PlotViewer from "./PlotViewer";
+import PackageManager from "../lib/packageManager";
+import Welcome from "./Welcome";
 
 function Desktop() {
+  const [pyodide, setPyodide] = useState(null);
+  const plotRef = useRef(null);
+  const [pendingFigure, setPendingFigure] = useState(null);
+
+  useEffect(() => {
+    if (localStorage.getItem("showWelcome") !== "false") {
+      setOpenWindows((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          type: "welcome",
+          x: 120,
+          y: 80,
+        },
+      ]);
+    }
+  }, []);
+
+  useEffect(() => {
+    async function init() {
+      try {
+        const py = await loadPyodide({
+          indexURL: "https://cdn.jsdelivr.net/pyodide/v314.0.2/full/",
+        });
+        PackageManager.loadInstalled(py);
+        setPyodide(py);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    init();
+  }, []);
+
   const [nextOffset, setNextOffset] = useState({
     x: 0,
     y: 0,
@@ -30,6 +68,24 @@ function Desktop() {
     const w = openWindows.find((Window) => Window.type === type);
     setOpenWindows([...others, w]);
   };
+  function handleNewPlot(figureElement) {
+    setPendingFigure(figureElement);
+    if (!openWindows.map((Window) => Window.type).includes("plotViewer")) {
+      setOpenWindows([
+        ...openWindows,
+        {
+          id: crypto.randomUUID(),
+          type: "plotViewer",
+          x: 100 + nextOffset.x,
+          y: 80 + nextOffset.y,
+        },
+      ]);
+      setNextOffset((prev) => ({
+        x: prev.x + 30,
+        y: prev.y + 30,
+      }));
+    }
+  }
   const windows = openWindows.map((app) => {
     if (app.type === "notes") {
       return (
@@ -72,7 +128,37 @@ function Desktop() {
           x={app.x}
           y={app.y}
         >
-          <PythonIDE />
+          <PythonIDE pyodide={pyodide} onNewPlot={handleNewPlot} />
+        </WindowGUI>
+      );
+    }
+    if (app.type === "plotViewer") {
+      return (
+        <WindowGUI
+          onFocus={() => focusWindow("plotViewer")}
+          key={app.id}
+          title="Plot Viewer"
+          onClose={() => closeWindowByName("plotViewer")}
+          desktopRef={desktopRef}
+          x={app.x}
+          y={app.y}
+        >
+          <PlotViewer plotRef={plotRef} fig={pendingFigure} />
+        </WindowGUI>
+      );
+    }
+    if (app.type === "welcome") {
+      return (
+        <WindowGUI
+          onFocus={() => focusWindow("welcome")}
+          key={app.id}
+          title="Welcome"
+          onClose={() => closeWindowByName("welcome")}
+          desktopRef={desktopRef}
+          x={app.x}
+          y={app.y}
+        >
+          <Welcome />
         </WindowGUI>
       );
     }
@@ -152,8 +238,8 @@ function Desktop() {
         <BasicDateCalendar
           sx={{
             bgcolor: "transparent",
-            width:300,
-            height:250,
+            width: 300,
+            height: 250,
 
             /* Month & Year */
             "& .MuiPickersCalendarHeader-label": {
@@ -215,6 +301,29 @@ function Desktop() {
         />
       </div>
       <div className="absolute top-24 left-6 grid grid-cols-1 gap-4">
+        <DesktopIcon
+          icon={welcomeIcon}
+          name="Welcome"
+          onClick={() => {
+            if (
+              !openWindows.map((Window) => Window.type).includes("welcomer")
+            ) {
+              setOpenWindows([
+                ...openWindows,
+                {
+                  id: crypto.randomUUID(),
+                  type: "welcome",
+                  x: 100 + nextOffset.x,
+                  y: 80 + nextOffset.y,
+                },
+              ]);
+              setNextOffset((prev) => ({
+                x: prev.x + 30,
+                y: prev.y + 30,
+              }));
+            }
+          }}
+        />
         <DesktopIcon
           icon={notesIcon}
           name="Notes"

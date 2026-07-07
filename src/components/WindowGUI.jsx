@@ -121,7 +121,7 @@ function WindowGUI({ title, onClose, children, desktopRef, x, y, onFocus }) {
     <div
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
-       onPointerDown={() => onFocus()}
+      onPointerDown={() => onFocus()}
       className="bg-sky-100/10
                     backdrop-blur-2xl
                     backdrop-saturate-150
@@ -192,7 +192,7 @@ function WindowGUI({ title, onClose, children, desktopRef, x, y, onFocus }) {
           </svg>
         </button>
       </div>
-      <div className="p-8 flex-1 child select-none">{children}</div>
+      <div className="p-8 flex-1 min-h-0 select-none">{children}</div>
       <div
         onPointerDown={(e) => {
           e.currentTarget.setPointerCapture(e.pointerId);
