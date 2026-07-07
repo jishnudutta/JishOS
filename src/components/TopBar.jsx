@@ -24,7 +24,7 @@ function TopBar() {
     >
       <div className="flex items-center justify-between w-full select-none">
         <img src={logo} alt="JishOS" className="h-8 w-auto rounded-4xl" />
-        <h2 className="px-20">{time}</h2>
+        <h2 className="px-20 text-white">{time}</h2>
       </div>
     </nav>
   );
