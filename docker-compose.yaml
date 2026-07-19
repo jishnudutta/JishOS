@@ -1,0 +1,7 @@
+services:
+  jishworks:
+    build: .
+    container_name: jishos
+    restart: unless-stopped
+    ports:
+      - "3001:80"
